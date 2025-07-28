@@ -1,11 +1,15 @@
 package spring_two.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 import spring_two.entity.Employee;
+import spring_two.exeption_handling.EmployeeIncorrectData;
+import spring_two.exeption_handling.NoSuchEmployeeException;
+import spring_two.exeption_handling.NoSuchEmployeeException;
 import spring_two.service.EmployeeService;
+import spring_two.service.EmployeeServiceImpl;
 
 import java.util.List;
 
@@ -22,5 +26,21 @@ public class MyRestController {
         return employees;
     }
 
+    @GetMapping("/employees/{id}")
+    public Employee getEmployee(@PathVariable("id") int id){
+        Employee employee = employeeService.getEmployee(id);
+
+        if(employee == null){
+            throw new NoSuchEmployeeException("There is no employee with id " + id+ " in Database.");
+        }
+
+        return employee;
+    }
+
+    @PostMapping("/employees")
+    public Employee addNewEmployee(@RequestBody Employee employee){
+        EmployeeService.saveEmployee(employee);
+        return employee;
+    }
 
 }
